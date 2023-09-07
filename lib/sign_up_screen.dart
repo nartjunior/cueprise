@@ -1,5 +1,10 @@
+import 'dart:async';
+
 import 'package:cueprise/main.dart';
+import 'package:cueprise/welcome_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'form_provider.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -9,6 +14,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  late FormProvider _formProvider;
   final textFieldFocusNode = FocusNode();
   bool _obscured = false;
 
@@ -24,6 +30,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _formProvider = Provider.of<FormProvider>(context);
     return Scaffold(
       appBar: buildAppBar(context),
       body: Padding(
@@ -62,13 +69,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   'Email Adress',
                 ),
               ),
-              const TextField(
+              TextFormField(
+                  onChanged: _formProvider.validateEmail,
                   decoration: InputDecoration(
+                    errorText: _formProvider.email.error,
                     border: InputBorder.none,
                     filled: true,
                     hintText: 'johndoe@gmail.com',
-                    hintStyle: TextStyle(
-                        fontSize: 20.0,),
+                    hintStyle: const TextStyle(
+                      fontSize: 20.0,
+                    ),
                   ),
                   textInputAction: TextInputAction.next),
               Container(
@@ -81,8 +91,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   'Full Name',
                 ),
               ),
-              const TextField(
+              TextFormField(
+                  onChanged: _formProvider.validateName,
                   decoration: InputDecoration(
+                    errorText: _formProvider.name.error,
                     border: InputBorder.none,
                     filled: true,
                     hintText: 'John Smith',
@@ -98,8 +110,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   'Phone number',
                 ),
               ),
-              const TextField(
+              TextFormField(
+                  onChanged: _formProvider.validatePhone,
                   decoration: InputDecoration(
+                    errorText: _formProvider.phone.error,
                     border: InputBorder.none,
                     filled: true,
                     hintText: 'e.g. 080556688899',
@@ -115,11 +129,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   'Password',
                 ),
               ),
-              TextField(
+              TextFormField(
+                onChanged: _formProvider.validatePassword,
                 keyboardType: TextInputType.visiblePassword,
                 obscureText: _obscured,
                 focusNode: textFieldFocusNode,
                 decoration: InputDecoration(
+                  errorText: _formProvider.password.error,
                   floatingLabelBehavior: FloatingLabelBehavior.never,
                   filled: true,
                   hintText: "**********",
@@ -140,7 +156,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
               ),
-              buildRegisterButton(),
+              Consumer<FormProvider>(builder: (context, model, child) {
+                return Container(
+                  height: 80,
+                  width: double.infinity,
+                  padding: const EdgeInsets.only(top: 25, bottom: 10),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (model.validate) {
+                        Timer(Duration(seconds: 3), () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => WelcomeScreen(),
+                            ),
+                          );
+                        });
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                    ),
+                    child: const Text('Register'),
+                  ),
+                );
+              }),
               Container(
                 height: 60,
                 width: double.infinity,
@@ -191,7 +231,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     onPressed: () {
                       //signup screen
                     },
-                  )
+                  ),
                 ],
               ),
             ],
@@ -209,10 +249,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       leading: buildBackButton(context),
       toolbarHeight: 80,
       centerTitle: true,
-      title: Row(
+      title: const Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Icon(Icons.ac_unit),
           SizedBox(width: 5), // give it width
           Text('cueprise')
@@ -248,23 +288,4 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
-
-  Container buildRegisterButton() {
-    return Container(
-      height: 80,
-      width: double.infinity,
-      padding: const EdgeInsets.only(top: 25, bottom: 10),
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-        ),
-        child: const Text(
-          'Register',
-        ),
-      ),
-    );
-  }
-
 }

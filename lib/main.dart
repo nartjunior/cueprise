@@ -1,7 +1,9 @@
 import 'package:cueprise/sign_up_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'dark_theme.dart';
+import 'form_provider.dart';
 import 'light_theme.dart';
 
 void main() => runApp(const MyApp());
@@ -34,7 +36,7 @@ class _MyAppFieldState extends State<MyApp> with WidgetsBindingObserver {
   void didChangePlatformBrightness() {
     print("======================");
     super.didChangePlatformBrightness();
-    var brightness = WidgetsBinding.instance.window.platformBrightness;
+    var brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
     MyApp.themeNotifier.value = brightness == Brightness.light ? ThemeMode.light : ThemeMode.dark;
   }
 
@@ -44,11 +46,15 @@ class _MyAppFieldState extends State<MyApp> with WidgetsBindingObserver {
         valueListenable: MyApp.themeNotifier,
         builder: (_, ThemeMode currentMode, __) {
           return MaterialApp(
+              debugShowCheckedModeBanner: false,
               title: 'Cueprise',
               theme: lightTheme,
               darkTheme: darkTheme,
               themeMode: currentMode,
-              home: const SignUpScreen());
+              home: ChangeNotifierProvider(
+                  create: (_) => FormProvider(),
+                  child: const SignUpScreen(),
+              ));
         });
   }
 }
