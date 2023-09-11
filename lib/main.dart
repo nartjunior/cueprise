@@ -1,18 +1,25 @@
 import 'package:cueprise/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dark_theme.dart';
 import 'form_provider.dart';
 import 'light_theme.dart';
 
-void main() => runApp(const MyApp());
+SharedPreferences? prefs;
+
+void main() async {
+      WidgetsFlutterBinding.ensureInitialized();
+      prefs = await SharedPreferences.getInstance();
+      runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
-  static final ValueNotifier<ThemeMode> themeNotifier =
-      ValueNotifier(ThemeMode.light);
+  static late ValueNotifier<ThemeMode> themeNotifier;
 
   const MyApp({Key? key}) : super(key: key);
+
 
   @override
   _MyAppFieldState createState() => _MyAppFieldState();
@@ -20,8 +27,13 @@ class MyApp extends StatefulWidget {
 
 class _MyAppFieldState extends State<MyApp> with WidgetsBindingObserver {
 
+
   @override
   void initState() {
+    var saved =  prefs?.getBool('isDark') ?? false;
+    MyApp.themeNotifier = ValueNotifier(
+        saved ? ThemeMode.dark : ThemeMode.light
+    );
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
@@ -33,11 +45,18 @@ class _MyAppFieldState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangePlatformBrightness() {
-    print("======================");
+  void didChangePlatformBrightness() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     super.didChangePlatformBrightness();
     var brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
-    MyApp.themeNotifier.value = brightness == Brightness.light ? ThemeMode.light : ThemeMode.dark;
+    if (brightness == Brightness.light) {
+      MyApp.themeNotifier.value = ThemeMode.light;
+      prefs.setBool('isDark', false);
+    } else {
+      MyApp.themeNotifier.value = ThemeMode.dark;
+      prefs.setBool('isDark', true);
+    }
   }
 
   @override
@@ -52,8 +71,8 @@ class _MyAppFieldState extends State<MyApp> with WidgetsBindingObserver {
               darkTheme: darkTheme,
               themeMode: currentMode,
               home: ChangeNotifierProvider(
-                  create: (_) => FormProvider(),
-                  child: const SignUpScreen(),
+                create: (_) => FormProvider(),
+                child: const SignUpScreen(),
               ));
         });
   }

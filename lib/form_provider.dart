@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class FormProvider extends ChangeNotifier {
   ValidationModel _email = ValidationModel(null, null);
   ValidationModel _name = ValidationModel(null, null);
@@ -16,7 +15,7 @@ class FormProvider extends ChangeNotifier {
     if (val != null && val.isValidEmail) {
       _email = ValidationModel(val, null);
     } else {
-      _email = ValidationModel(null, 'Please Enter a Valid Email');
+      _email = ValidationModel(null, 'Please enter a valid email');
     }
     notifyListeners();
   }
@@ -33,7 +32,7 @@ class FormProvider extends ChangeNotifier {
     if (val != null && val.isValidPhone) {
       _phone = ValidationModel(val, null);
     } else {
-      _phone = ValidationModel(null, 'Phone Number must be up to 12 digits');
+      _phone = ValidationModel(null, 'Phone Number must be up to 12 digits, with first digit being 0');
     }
     notifyListeners();
   }
@@ -43,7 +42,7 @@ class FormProvider extends ChangeNotifier {
       _password = ValidationModel(val, null);
     } else {
       _password = ValidationModel(null,
-          'Password must contain an uppercase, lowercase, \nnumeric digit and special character');
+          'Password must contain an uppercase, lowercase, numeric digit and special character');
     }
 
     notifyListeners();
@@ -68,17 +67,17 @@ class ValidationModel {
 
 extension extString on String {
   bool get isValidEmail {
-    final emailRegExp = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    final emailRegExp = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9!@#$&*~-]+\.[a-zA-Z]+");
     return emailRegExp.hasMatch(this);
   }
 
   bool get isValidName{
-    final nameRegExp = RegExp(r"^\s*([A-Za-z]{1,}([.,] |[-']| ))+[A-Za-z]+\.?\s*$");
+    final nameRegExp = RegExp(r"^(([A-Z][a-z]{1,15})\s*){2,15}$");
     return nameRegExp.hasMatch(this);
   }
 
   bool get isValidPhone{
-    final phoneRegExp = RegExp(r"^\+?0[0-9]{11}$");
+    final phoneRegExp = RegExp(r"^\+{0,1}[0-9]{11}$");
     return phoneRegExp.hasMatch(this);
   }
 

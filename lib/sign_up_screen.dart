@@ -18,6 +18,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final textFieldFocusNode = FocusNode();
   bool _obscured = false;
 
+
   void _toggleObscured() {
     setState(() {
       _obscured = !_obscured;
@@ -73,6 +74,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   onChanged: _formProvider.validateEmail,
                   decoration: InputDecoration(
                     errorText: _formProvider.email.error,
+                    errorMaxLines: 3,
                     border: InputBorder.none,
                     filled: true,
                     hintText: 'johndoe@gmail.com',
@@ -95,6 +97,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   onChanged: _formProvider.validateName,
                   decoration: InputDecoration(
                     errorText: _formProvider.name.error,
+                    errorMaxLines: 3,
                     border: InputBorder.none,
                     filled: true,
                     hintText: 'John Smith',
@@ -114,6 +117,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   onChanged: _formProvider.validatePhone,
                   decoration: InputDecoration(
                     errorText: _formProvider.phone.error,
+                    errorMaxLines: 3,
                     border: InputBorder.none,
                     filled: true,
                     hintText: 'e.g. 080556688899',
@@ -136,6 +140,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 focusNode: textFieldFocusNode,
                 decoration: InputDecoration(
                   errorText: _formProvider.password.error,
+                  errorMaxLines: 3,
                   floatingLabelBehavior: FloatingLabelBehavior.never,
                   filled: true,
                   hintText: "**********",
@@ -164,13 +169,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (model.validate) {
-                        Timer(Duration(seconds: 3), () {
+                        showLoaderDialog(context);
+                        Future.delayed(const Duration(seconds: 3), () {
+                          Navigator.of(context, rootNavigator: true).pop();
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => WelcomeScreen(),
                             ),
                           );
                         });
+                      } else {
+                        Widget okButton = TextButton(
+                          child: Text("OK"),
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true).pop();
+                          },
+                        );
+
+                        // set up the AlertDialog
+                        AlertDialog alert = AlertDialog(
+                          title: const Text("Register"),
+                          content: const Text("You have to fill all the fiels properly."),
+                          actions: [
+                            okButton,
+                          ],
+                        );
+
+                        // show the dialog
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return alert;
+                          },
+                        );
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -260,14 +291,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
       actions: [
         IconButton(
-            icon: Icon(MyApp.themeNotifier.value == ThemeMode.light
-                ? Icons.dark_mode
-                : Icons.light_mode),
+            icon: Icon(MyApp.themeNotifier.value == ThemeMode.light ? Icons.dark_mode : Icons.light_mode),
             onPressed: () {
-              MyApp.themeNotifier.value =
-                  MyApp.themeNotifier.value == ThemeMode.light
-                      ? ThemeMode.dark
-                      : ThemeMode.light;
+              var isDark = MyApp.themeNotifier.value == ThemeMode.dark;
+              if (isDark) {
+                MyApp.themeNotifier.value = ThemeMode.light;
+                prefs?.setBool('isDark', false);
+              } else {
+                MyApp.themeNotifier.value = ThemeMode.dark;
+                prefs?.setBool('isDark', true);
+              }
             })
       ],
     );
@@ -286,6 +319,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
+    );
+  }
+
+  showLoaderDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      content: Row(
+        children: [
+          CircularProgressIndicator(),
+          Container(
+              margin: EdgeInsets.only(left: 7), child: Text("Loading...")),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }
