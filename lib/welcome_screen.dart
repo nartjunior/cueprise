@@ -11,7 +11,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-          child: Center(child: Text('Welcome to Home screem')),
+          child: Center(child: Text('Welcome to Home screen')),
         ));
   }
 
