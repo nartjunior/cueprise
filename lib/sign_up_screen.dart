@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:cueprise/main.dart';
 import 'package:cueprise/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'form_provider.dart';
+import 'package:cueprise/app_text_field.dart';
+import 'my_app_bar.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -18,14 +19,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final textFieldFocusNode = FocusNode();
   bool _obscured = false;
 
-
   void _toggleObscured() {
     setState(() {
       _obscured = !_obscured;
-      if (textFieldFocusNode.hasPrimaryFocus)
-        return; // If focus is on text field, dont unfocus
-      textFieldFocusNode.canRequestFocus =
-          false; // Prevents focus if tap on eye
+      if (textFieldFocusNode.hasPrimaryFocus) return; // If focus is on text field, dont unfocus
+      textFieldFocusNode.canRequestFocus = false; // Prevents focus if tap on eye
     });
   }
 
@@ -33,7 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     _formProvider = Provider.of<FormProvider>(context);
     return Scaffold(
-      appBar: buildAppBar(context),
+      appBar: MyAppBar(),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
@@ -42,14 +40,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: [
-              Container(
-                child: const Text(
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 22,
-                  ),
-                  'Account Sing-up',
+              const Text(
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
                 ),
+                'Account Sing-up',
               ),
               Container(
                 padding: const EdgeInsets.only(top: 15),
@@ -60,106 +56,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   'Become a member and enjoy Cueprise services and benefits',
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.only(top: 30, bottom: 15),
-                child: const Text(
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                  ),
-                  'Email Adress',
-                ),
+              AppTextField(
+                errorText: _formProvider.email.error,
+                onChanged: _formProvider.validateEmail,
+                hintText: 'johndoe@gmail.com',
+                title: 'Email Address',
+                nextAction: TextInputAction.next,
               ),
-              TextFormField(
-                  onChanged: _formProvider.validateEmail,
-                  decoration: InputDecoration(
-                    errorText: _formProvider.email.error,
-                    errorMaxLines: 3,
-                    border: InputBorder.none,
-                    filled: true,
-                    hintText: 'johndoe@gmail.com',
-                    hintStyle: const TextStyle(
-                      fontSize: 20.0,
-                    ),
-                  ),
-                  textInputAction: TextInputAction.next),
-              Container(
-                padding: const EdgeInsets.only(top: 30, bottom: 15),
-                child: const Text(
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                  ),
-                  'Full Name',
-                ),
+              AppTextField(
+                onChanged: _formProvider.validateName,
+                errorText: _formProvider.name.error,
+                hintText: 'John Smith',
+                title: 'Full Name',
+                nextAction: TextInputAction.next,
               ),
-              TextFormField(
-                  onChanged: _formProvider.validateName,
-                  decoration: InputDecoration(
-                    errorText: _formProvider.name.error,
-                    errorMaxLines: 3,
-                    border: InputBorder.none,
-                    filled: true,
-                    hintText: 'John Smith',
-                  ),
-                  textInputAction: TextInputAction.next),
-              Container(
-                padding: const EdgeInsets.only(top: 30, bottom: 15),
-                child: const Text(
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                  ),
-                  'Phone number',
-                ),
+              AppTextField(
+                errorText: _formProvider.phone.error,
+                onChanged: _formProvider.validatePhone,
+                hintText: '033732838383',
+                title: "Phone Number",
+                nextAction: TextInputAction.next,
               ),
-              TextFormField(
-                  onChanged: _formProvider.validatePhone,
-                  decoration: InputDecoration(
-                    errorText: _formProvider.phone.error,
-                    errorMaxLines: 3,
-                    border: InputBorder.none,
-                    filled: true,
-                    hintText: 'e.g. 080556688899',
-                  ),
-                  textInputAction: TextInputAction.next),
-              Container(
-                padding: const EdgeInsets.only(top: 30, bottom: 15),
-                child: const Text(
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                  ),
-                  'Password',
-                ),
-              ),
-              TextFormField(
+              AppTextField(
+                errorText: _formProvider.password.error,
                 onChanged: _formProvider.validatePassword,
-                keyboardType: TextInputType.visiblePassword,
+                toggleObscured: _toggleObscured,
                 obscureText: _obscured,
-                focusNode: textFieldFocusNode,
-                decoration: InputDecoration(
-                  errorText: _formProvider.password.error,
-                  errorMaxLines: 3,
-                  floatingLabelBehavior: FloatingLabelBehavior.never,
-                  filled: true,
-                  hintText: "**********",
-                  isDense: true,
-                  // Reduces height a bit
-                  border: InputBorder.none,
-                  suffixIcon: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                    child: GestureDetector(
-                      onTap: _toggleObscured,
-                      child: Icon(
-                          _obscured
-                              ? Icons.visibility_rounded
-                              : Icons.visibility_off_rounded,
-                          size: 24,
-                          color: Theme.of(context).colorScheme.secondary),
-                    ),
-                  ),
-                ),
+                keyboardType: TextInputType.visiblePassword,
+                hintText: '**********',
+                title: 'Password',
+                nextAction: TextInputAction.done,
+                suffixIcon2: _obscured ? Icons.visibility_rounded : Icons.visibility_off_rounded,
               ),
               Consumer<FormProvider>(builder: (context, model, child) {
                 return Container(
@@ -174,13 +101,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Navigator.of(context, rootNavigator: true).pop();
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) => WelcomeScreen(),
+                              builder: (_) => const WelcomeScreen(),
                             ),
                           );
                         });
                       } else {
                         Widget okButton = TextButton(
-                          child: Text("OK"),
+                          child: const Text("OK"),
                           onPressed: () {
                             Navigator.of(context, rootNavigator: true).pop();
                           },
@@ -205,8 +132,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                     ),
                     child: const Text('Register'),
                   ),
@@ -219,11 +145,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                       backgroundColor: Theme.of(context).colorScheme.background,
-                      foregroundColor:
-                          Theme.of(context).colorScheme.onBackground,
+                      foregroundColor: Theme.of(context).colorScheme.onBackground,
                       side: BorderSide(
                         width: 2,
                         color: Theme.of(context).colorScheme.primary,
@@ -232,9 +156,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Image.network(
-                          'http://pngimg.com/uploads/google/google_PNG19635.png',
-                          fit: BoxFit.cover),
+                      Image.network('http://pngimg.com/uploads/google/google_PNG19635.png', fit: BoxFit.cover),
                       const Padding(
                         padding: EdgeInsets.only(left: 8.0, top: 4.0),
                         child: Text(
@@ -255,9 +177,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   TextButton(
                     child: Text(
                       'Sign in here',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.primary),
+                      style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.primary),
                     ),
                     onPressed: () {
                       //signup screen
@@ -272,63 +192,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  AppBar buildAppBar(BuildContext context) {
-    return AppBar(
-      automaticallyImplyLeading: false,
-      leadingWidth: 100,
-      backgroundColor: Theme.of(context).primaryColor,
-      leading: buildBackButton(context),
-      toolbarHeight: 80,
-      centerTitle: true,
-      title: const Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.ac_unit),
-          SizedBox(width: 5), // give it width
-          Text('cueprise')
-        ],
-      ),
-      actions: [
-        IconButton(
-            icon: Icon(MyApp.themeNotifier.value == ThemeMode.light ? Icons.dark_mode : Icons.light_mode),
-            onPressed: () {
-              var isDark = MyApp.themeNotifier.value == ThemeMode.dark;
-              if (isDark) {
-                MyApp.themeNotifier.value = ThemeMode.light;
-                prefs?.setBool('isDark', false);
-              } else {
-                MyApp.themeNotifier.value = ThemeMode.dark;
-                prefs?.setBool('isDark', true);
-              }
-            })
-      ],
-    );
-  }
-
-  ElevatedButton buildBackButton(BuildContext context) {
-    return ElevatedButton.icon(
-      onPressed: () => Navigator.of(context).pop(),
-      icon: const Icon(
-        Icons.arrow_circle_left,
-        color: Colors.white,
-        size: 40,
-      ),
-      label: const Text(''),
-      style: ElevatedButton.styleFrom(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
-    );
-  }
-
   showLoaderDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
       content: Row(
         children: [
-          CircularProgressIndicator(),
-          Container(
-              margin: EdgeInsets.only(left: 7), child: Text("Loading...")),
+          const CircularProgressIndicator(),
+          Container(margin: const EdgeInsets.only(left: 7), child: const Text("Loading...")),
         ],
       ),
     );
@@ -341,3 +210,5 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 }
+
+

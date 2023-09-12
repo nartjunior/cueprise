@@ -12,7 +12,7 @@ SharedPreferences? prefs;
 void main() async {
       WidgetsFlutterBinding.ensureInitialized();
       prefs = await SharedPreferences.getInstance();
-      runApp(MyApp());
+      runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {

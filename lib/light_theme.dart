@@ -7,7 +7,7 @@ ThemeData lightTheme = ThemeData(
       background : Color.fromARGB(255, 255, 255, 255),
       onBackground: Color.fromARGB(255, 0, 0, 0),
       secondary: Color.fromARGB(255, 141, 144, 151)),
-  canvasColor: Color.fromARGB(255, 255, 255, 255),
+  canvasColor: const Color.fromARGB(255, 255, 255, 255),
   textTheme: const TextTheme(
     bodyLarge:  TextStyle(
       color: Color.fromARGB(255, 0, 0, 0),

@@ -9,10 +9,8 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreen extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Container(
-          child: Center(child: Text('Welcome to Home screen')),
-        ));
+    return const Scaffold(
+        body: Center(child: Text('Welcome to Home screen')));
   }
 
 }
