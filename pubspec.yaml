@@ -38,6 +38,8 @@ dependencies:
   font_awesome_flutter: ^10.3.0
   shared_preferences: ^2.2.1
   provider: ^6.0.5
+  http: ^1.1.0
+
 
 
 

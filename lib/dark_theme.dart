@@ -10,4 +10,7 @@ ThemeData darkTheme = ThemeData(
         backgroundColor: MaterialStateProperty.all<Color>(Colors.grey),
     ),
   ),
+  floatingActionButtonTheme: FloatingActionButtonThemeData(
+    backgroundColor: Colors.grey
+  )
 );

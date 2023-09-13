@@ -4,6 +4,8 @@ import 'main.dart';
 import 'my_back_button.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const MyAppBar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return AppBar(

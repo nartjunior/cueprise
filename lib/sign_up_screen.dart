@@ -31,7 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     _formProvider = Provider.of<FormProvider>(context);
     return Scaffold(
-      appBar: MyAppBar(),
+      appBar: const MyAppBar(),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
