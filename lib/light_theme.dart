@@ -24,6 +24,6 @@ ThemeData lightTheme = ThemeData(
       ), //button color
     ),
   ),
-  floatingActionButtonTheme: FloatingActionButtonThemeData(backgroundColor: Colors.deepPurple,
+  floatingActionButtonTheme: const FloatingActionButtonThemeData(backgroundColor: Colors.deepPurple,
       foregroundColor: Colors.white), //button color
 );

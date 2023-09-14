@@ -99,11 +99,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         showLoaderDialog(context);
                         Future.delayed(const Duration(seconds: 3), () {
                           Navigator.of(context, rootNavigator: true).pop();
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const WelcomeScreen(),
-                            ),
-                          );
+                          Navigator.of(context).push<void>(_createRoute());
                         });
                       } else {
                         Widget okButton = TextButton(
@@ -209,6 +205,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
       },
     );
   }
+
+  Route _createRoute() {
+    return PageRouteBuilder<SlideTransition>(
+      transitionDuration: const Duration(milliseconds: 500),
+      pageBuilder: (context, animation, secondaryAnimation) => const WelcomeScreen(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var tween = Tween<Offset>(begin: const Offset(0.5, 1.0), end: Offset.zero);
+        var curveTween = CurveTween(curve: Curves.fastOutSlowIn);
+
+        return SlideTransition(
+          position: animation.drive(curveTween).drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
 }
-
-
