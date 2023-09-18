@@ -4,6 +4,7 @@ import 'package:cueprise/model/meme_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_animate/flutter_animate.dart';
+import 'profile_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -56,9 +57,19 @@ class _WelcomeScreen extends State<WelcomeScreen> with TickerProviderStateMixin 
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("MEMES"),
-      ),
+      appBar: AppBar(title: const Text("MEMES"), actions: [
+        const SizedBox(
+          height: 20,
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const ProfileScreen()),
+            );
+          },
+          child: const Icon(Icons.person),
+        ),
+      ]),
       resizeToAvoidBottomInset: false,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -67,9 +78,15 @@ class _WelcomeScreen extends State<WelcomeScreen> with TickerProviderStateMixin 
             memes[index].name,
             style: Theme.of(context).textTheme.titleLarge,
           ).animate(controller: _titleAnimController).slideY(begin: -10, duration: const Duration(milliseconds: 600)),
-          Center(
-            child: Image.network(memes[index].url),
-          ).animate(controller: _memeAnimController).fadeIn().flip(duration: const Duration(milliseconds: 500)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Center(
+                child: Image.network(memes[index].url, height: 200),
+              ).animate(controller: _memeAnimController).fadeIn().flip(duration: const Duration(milliseconds: 500)),
+            ],
+          ),
           Expanded(
             child: Row(
               children: [
@@ -77,39 +94,57 @@ class _WelcomeScreen extends State<WelcomeScreen> with TickerProviderStateMixin 
                   padding: const EdgeInsets.all(28),
                   child: Align(
                     alignment: Alignment.bottomLeft,
-                    child: FloatingActionButton.extended(
-                      onPressed: () {
-                        if (index == 0) {
-                          Widget okButton = TextButton(
-                            child: const Text("OK"),
-                            onPressed: () {
-                              Navigator.of(context, rootNavigator: true).pop();
-                            },
-                          );
-
-                          // set up the AlertDialog
-                          AlertDialog alert = AlertDialog(
+                    child: SizedBox(
+                      width: 120,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20), // <-- Radius
+                          ),
+                        ),
+                        onPressed: () {
+                          if (index == 0) {
+                            Widget okButton = TextButton(
+                              child: const Text("OK"),
+                              onPressed: () {
+                                Navigator.of(context, rootNavigator: true).pop();
+                              },
+                            );
+                            // set up the AlertDialog
+                            AlertDialog alert = AlertDialog(
                               content: const Text("You can't go lower."),
-                            actions: [
-                              okButton,
-                            ],
-                          );
+                              actions: [
+                                okButton,
+                              ],
+                            );
 
-                          // show the dialog
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return alert;
-                            },
-                          );
-                        } else {
-                          index--;
-                        }
-                        setState(() {});
-                      },
-                      icon: const Icon(Icons.arrow_forward_ios_rounded),
-                      splashColor: Colors.teal.withOpacity(0.3),
-                      label: const Text("Previous"),
+                            // show the dialog
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return alert;
+                              },
+                            );
+                          } else {
+                            index--;
+                          }
+                          setState(() {});
+                        },
+                        child: const SizedBox(
+                          width: 120,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                // <-- Icon
+                                Icons.arrow_back,
+                                size: 24.0,
+                              ),
+                              Text('Previous'), // <-- Text
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -117,14 +152,29 @@ class _WelcomeScreen extends State<WelcomeScreen> with TickerProviderStateMixin 
                   padding: const EdgeInsets.all(28),
                   child: Align(
                     alignment: Alignment.bottomRight,
-                    child: FloatingActionButton.extended(
-                      onPressed: () {
-                        index++;
-                        setState(() {});
-                      },
-                      icon: const Icon(Icons.arrow_forward_ios_rounded),
-                      splashColor: Colors.teal.withOpacity(0.3),
-                      label: const Text("Next"),
+                    child: SizedBox(
+                      width: 120,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20), // <-- Radius
+                          ),
+                        ),
+                        onPressed: () {
+                          index++;
+                          setState(() {});
+                        },
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Next'),
+                            Icon(
+                              Icons.arrow_forward,
+                              size: 24.0,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),

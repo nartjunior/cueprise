@@ -1,3 +1,4 @@
+import 'package:cueprise/persistence.dart';
 import 'package:flutter/material.dart';
 
 import 'main.dart';
@@ -31,10 +32,10 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
               var isDark = MyApp.themeNotifier.value == ThemeMode.dark;
               if (isDark) {
                 MyApp.themeNotifier.value = ThemeMode.light;
-                prefs?.setBool('isDark', false);
+                Persistence.saveDarkTheme(false);
               } else {
                 MyApp.themeNotifier.value = ThemeMode.dark;
-                prefs?.setBool('isDark', true);
+                Persistence.saveDarkTheme(false);
               }
             })
       ],

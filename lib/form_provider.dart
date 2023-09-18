@@ -32,7 +32,7 @@ class FormProvider extends ChangeNotifier {
     if (val != null && val.isValidPhone) {
       _phone = ValidationModel(val, null);
     } else {
-      _phone = ValidationModel(null, 'Phone Number must be up to 12 digits, with first digit being 0');
+      _phone = ValidationModel(null, 'Phone Number must be up to 12 digits');
     }
     notifyListeners();
   }

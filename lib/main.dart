@@ -1,18 +1,16 @@
+import 'package:cueprise/persistence.dart';
 import 'package:cueprise/sign_up_screen.dart';
+import 'package:cueprise/welcome_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dark_theme.dart';
-import 'form_provider.dart';
 import 'light_theme.dart';
 
-SharedPreferences? prefs;
-
 void main() async {
-      WidgetsFlutterBinding.ensureInitialized();
-      prefs = await SharedPreferences.getInstance();
-      runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  Persistence.initPersistence();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -30,7 +28,7 @@ class _MyAppFieldState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    var saved =  prefs?.getBool('isDark') ?? false;
+    var saved = Persistence.isDarkTheme();
     MyApp.themeNotifier = ValueNotifier(
         saved ? ThemeMode.dark : ThemeMode.light
     );
@@ -70,10 +68,7 @@ class _MyAppFieldState extends State<MyApp> with WidgetsBindingObserver {
               theme: lightTheme,
               darkTheme: darkTheme,
               themeMode: currentMode,
-              home: ChangeNotifierProvider(
-                create: (_) => FormProvider(),
-                child: const SignUpScreen(),
-              ));
+              home: Persistence.getUser() == null ? const SignUpScreen() : const WelcomeScreen());
         });
   }
 }
